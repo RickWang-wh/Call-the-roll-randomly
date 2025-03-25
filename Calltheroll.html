@@ -58,9 +58,9 @@
 
         .bin {
             flex: 1;
-            border: 2px solid #8B4513;
+            border: 1px solid #8B4513;
             background: #f8f4e9;
-            height: 50%;
+            height: 45%;
             position: relative;
             transition: all 0.3s;
             writing-mode: vertical-rl; /* 竖排文字 */
@@ -134,37 +134,47 @@
         }
         
         .focus-text {
-            position: fixed;
-            top: 50%;
-            left: 50%;
+            position: relative;
+            top: auto;
+            left: auto;
             transform: translate(-50%, -50%) scale(0.5);
             font-family: "KaiTi", "楷体", serif;
-            font-size: 60px;
+            font-size: 100px;
             color: #FFD700;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            writing-mode: vertical-rl;
+            writing-mode: horizontal-tb;
             text-orientation: upright;
             opacity: 0;
             z-index: 101;
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             white-space: nowrap;
         }
+
+        .title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 100px;
+            color: #8B4513;
+            font-weight: bold;
+            font-family: "KaiTi", "楷体", serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1 class="title">点名系统</h1>
         <div id="galton"></div>
         <div class="bins" id="bins"></div>
         <div class="controls">
-            <button id="start">开始</button>
-            <button id="random1">随机1</button>
-            <button id="random2">随机2</button>
-            <button id="reset">重置</button>
+            <button id="start" title="点击开始！">开始</button>
+            <button id="random1" title="随机选择一个幸运鹅~">随机1</button>
+            <button id="random2" title="随机选择两个幸运鹅~">随机2</button>
+            <button id="reset" title="大不了从头再来！">重置</button>
         </div>
     </div>
     
     <div class="focus-overlay" id="focusOverlay"></div>
-    //<div class="focus-text" id="focusText"></div>
     <div class="focus-text-container" id="focusTextContainer"></div>
 
     <script>
@@ -183,12 +193,11 @@
         
         // 班级同学名单 - 请在此处填入实际姓名
         const classNames = [
-            "张", "李", "王", "赵", "钱", "孙", "周", "吴",
-            "郑", "冯", "陈", "褚", "卫", "蒋", "沈", "韩",
-            "杨", "朱", "秦", "尤", "许", "何", "吕", "施",
-            "孔", "曹", "严", "华", "金", "魏", "陶", "姜",
-            "戚", "谢", "邹", "喻", "柏", "水", "窦", "章",
-            "云", "苏", "潘", "葛", "范", "彭", "鲁", "韦"
+            "张敏","缪璘","李娜娜","秦慧婕","张宇涵","王易","席姚立","刘倩","周馨菲","宋燕茜",
+            "平敏芳","吴子悠","吴羽菲","李思琪","李惠泽","王登涛","朱子涵","杨梦飞","张芸菁","夏心怡",
+            "周佳妍","陈紫涵","徐韵","李佳臻","吴梦琦","吴悦","陈思源","刘欢会","于慧萍","顾昕怡",
+            "姚瑶","吴雪晴","孙一鸣","周欣怡","彭双双","王佳明","冯山珊","方钱宇","沈铎睿","赵安泽",
+            "张佳怡","周宇昊","徐浩铭","薛梓文","孙小茵","汪婧睿","杨雪怡","孟子钦"
         ];
         
         // 确保名单数量与格子数量匹配
@@ -325,7 +334,7 @@
                     vx: (Math.random() > 0.5 ? 1 : -1) * 2,
                     update: function() {
                         this.x += this.vx;
-                        if (this.x < BALL_RADIUS || this.x > 1000 - BALL_RADIUS) {
+                        if (this.x < BALL_RADIUS || this.x > 980 - BALL_RADIUS) {
                             this.vx *= -1;
                             this.x = Math.max(BALL_RADIUS, Math.min(this.x, 1000 - BALL_RADIUS));
                         }
@@ -404,6 +413,7 @@
                                     idx => namesToUse[idx] || `格${idx+1}`
                                 );
                                 showFocusAnimation(selectedNames);
+                                startPreGameAnimation();
                                 isRunning = false;
                             }
                             return false;
@@ -424,6 +434,7 @@
                 if (activeBalls > 0) requestAnimationFrame(animate);
             }
             requestAnimationFrame(animate);
+            
         }
 
         // 初始化事件监听
@@ -435,6 +446,7 @@
                     this.classList.add('pulse');
                     setTimeout(() => this.classList.remove('pulse'), 200);
                     dropBall();
+                    
                 }
             });
 
@@ -459,11 +471,14 @@
                 isRunning = false;
                 lastSelected = -1;
                 buttons.forEach(btn => btn.classList.remove('active'));
-                currentBalls = 1;
                 document.getElementById('random1').classList.add('active');
+                currentBalls = 1;
+                startPreGameAnimation();
             });
 
             document.getElementById('random1').classList.add('active');
+            currentBalls = 1;
+            startPreGameAnimation();
         }
 
         // 初始化页面
